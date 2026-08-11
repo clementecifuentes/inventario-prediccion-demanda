@@ -1,0 +1,14 @@
+# Datos crudos (se regeneran con src/descargar_datos.py)
+data/*.csv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE / SO
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
