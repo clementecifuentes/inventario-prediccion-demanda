@@ -9,18 +9,42 @@ reorden y stock de seguridad.
 
 ---
 
+## Antes de las conclusiones: este dataset es sintético
+
+Perfilando los datos encontré dos señales que muestran que fueron generados
+artificialmente, no medidos:
+
+- El **coeficiente de variación de los 50 productos va de 0,2469 a 0,2584**. Un
+  rango de un punto porcentual entre 50 productos distintos no existe en una
+  operación real, donde conviven productos estables con otros erráticos.
+- **Cada tienda representa la misma proporción de ventas en todos los productos**
+  (el desvío de esa proporción entre productos es 0,0003). La tienda 3 vende el
+  11,4% del producto 1, del producto 2 y del producto 47. Eso solo pasa si la
+  serie se generó como `factor_tienda × factor_producto × estacionalidad + ruido`.
+
+Los chequeos están en [`src/perfilado_datos.py`](src/perfilado_datos.py), que
+además valida nulos, duplicados y cobertura del calendario. Corrélo y vas a ver
+los mismos números.
+
+Lo dejo escrito porque cambia cómo hay que leer el resto: **las conclusiones de
+negocio no son extrapolables a una operación real, la metodología sí.** El corte
+ABC de acá, por ejemplo, no se parece al 20/80 que suele aparecer en inventarios
+reales.
+
 ## Conclusiones
 
-- 31 de 50 SKUs explican el 80% del volumen. Hay concentración, pero no una
-  cola larga extrema, así que las clases B y C admiten políticas de reposición
-  más simples sin necesidad de seguimiento fino.
-- La variabilidad relativa de la demanda es pareja entre productos (CV de ~25%)
-  y baja suavemente al crecer el volumen, el patrón típico de demanda estable.
-  Eso habilita un stock de seguridad calculado por fórmula, sin casos especiales.
+- 31 de 50 SKUs explican el 80% del volumen. En un inventario real esperaría algo
+  más cercano a 20/80; acá el reparto es más plano porque la demanda se generó
+  pareja entre productos (ver arriba).
+- La variabilidad relativa es prácticamente idéntica entre productos, así que la
+  matriz volumen-variabilidad no separa grupos como lo haría con datos reales.
+  Con dispersión genuina, este gráfico es la base para combinar ABC con XYZ y
+  definir políticas distintas por grupo.
 - El pronóstico mensual con Holt-Winters da 2,4% de MAPE sobre 2017 (validación
   fuera de muestra), mejor que el baseline naive estacional (3,4%). Probé las
   variantes aditiva y multiplicativa y me quedé con la aditiva, que validó mejor
-  (la multiplicativa daba 4,4%).
+  (la multiplicativa daba 4,4%). Esta parte sí es metodológicamente sólida: la
+  estacionalidad del dataset es regular y el modelo la captura bien.
 - Con lead time de 7 días y 95% de nivel de servicio, los puntos de reorden de
   los SKUs líderes quedan entre 6.200 y 7.100 unidades, con el stock de
   seguridad pesando ~13% del total.
@@ -54,7 +78,10 @@ pip install -r requirements.txt
 # 1. Descargar los datos (~17 MB)
 python src/descargar_datos.py
 
-# 2. Generar las figuras
+# 2. Perfilar los datos (integridad y pruebas de plausibilidad)
+python src/perfilado_datos.py
+
+# 3. Generar las figuras
 python src/analisis.py
 ```
 
@@ -63,6 +90,7 @@ python src/analisis.py
 ```
 ├── src/
 │   ├── descargar_datos.py   # descarga del dataset
+│   ├── perfilado_datos.py   # integridad + detección de datos sintéticos
 │   └── analisis.py          # ABC, forecast y política de inventario
 ├── figures/                 # gráficos generados (PNG)
 ├── data/                    # datos crudos (no versionados)
@@ -72,6 +100,8 @@ python src/analisis.py
 ## Notas metodológicas
 
 - **ABC**: clase A hasta el 80% del volumen acumulado, B hasta el 95%, C el resto.
+  Clasificado por unidades porque el dataset no trae precios; en una operación
+  real conviene hacerlo por facturación o margen.
 - **Pronóstico**: entrenamiento 2013-2016, evaluación sobre 2017 completo.
   Modelo `ExponentialSmoothing(trend="add", seasonal="add", seasonal_periods=12)`.
 - **Punto de reorden** = demanda media diaria × lead time + stock de seguridad,
