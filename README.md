@@ -9,22 +9,21 @@ reorden y stock de seguridad.
 
 ---
 
-## Hallazgos principales
+## Conclusiones
 
-- El **análisis ABC** muestra una concentración moderada: 31 de 50 SKUs explican
-  el 80% del volumen. No hay una cola larga extrema — toda la cartera merece
-  seguimiento, pero las clases B y C admiten políticas de reposición más simples.
-- La **variabilidad relativa de la demanda es homogénea** (~25% de coeficiente de
-  variación) y decrece suavemente con el volumen — el patrón esperable de demanda
-  aleatoria estable. Eso permite una política de stock de seguridad uniforme por
-  fórmula, sin tratamiento especial por SKU.
-- El pronóstico mensual con **Holt-Winters logra 2,4% de MAPE** sobre 2017
-  (validación fuera de muestra), superando al baseline naive estacional (3,4%).
-  La variante de estacionalidad aditiva se seleccionó por validación — la
-  multiplicativa rendía peor (4,4%).
-- La **política de reposición** calculada (lead time 7 días, 95% de servicio)
-  arroja puntos de reorden de 6.200-7.100 unidades para los SKUs líderes, con el
-  stock de seguridad representando ~13% del punto de reorden.
+- 31 de 50 SKUs explican el 80% del volumen. Hay concentración, pero no una
+  cola larga extrema, así que las clases B y C admiten políticas de reposición
+  más simples sin necesidad de seguimiento fino.
+- La variabilidad relativa de la demanda es pareja entre productos (CV de ~25%)
+  y baja suavemente al crecer el volumen, el patrón típico de demanda estable.
+  Eso habilita un stock de seguridad calculado por fórmula, sin casos especiales.
+- El pronóstico mensual con Holt-Winters da 2,4% de MAPE sobre 2017 (validación
+  fuera de muestra), mejor que el baseline naive estacional (3,4%). Probé las
+  variantes aditiva y multiplicativa y me quedé con la aditiva, que validó mejor
+  (la multiplicativa daba 4,4%).
+- Con lead time de 7 días y 95% de nivel de servicio, los puntos de reorden de
+  los SKUs líderes quedan entre 6.200 y 7.100 unidades, con el stock de
+  seguridad pesando ~13% del total.
 
 ## Visualizaciones
 
