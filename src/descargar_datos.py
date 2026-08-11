@@ -11,6 +11,11 @@ Uso:
 """
 
 import sys
+
+# La consola de Windows usa cp1252 y rompe con acentos y flechas
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 from pathlib import Path
 
 import requests
