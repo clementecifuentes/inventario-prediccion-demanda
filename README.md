@@ -112,5 +112,5 @@ python src/analysis.py
 ---
 
 **Clemente Cifuentes** — Data Analyst ·
-[LinkedIn](https://linkedin.com/in/clementecifuentes) ·
+[LinkedIn](https://www.linkedin.com/in/clemente-cifuentes/) ·
 [Portafolio](https://github.com/clementecifuentes)
