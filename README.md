@@ -22,7 +22,7 @@ artificialmente, no medidos:
   11,4% del producto 1, del producto 2 y del producto 47. Eso solo pasa si la
   serie se generó como `factor_tienda × factor_producto × estacionalidad + ruido`.
 
-Los chequeos están en [`src/perfilado_datos.py`](src/perfilado_datos.py), que
+Los chequeos están en [`src/profile_data.py`](src/profile_data.py), que
 además valida nulos, duplicados y cobertura del calendario. Corrélo y vas a ver
 los mismos números.
 
@@ -76,22 +76,22 @@ sin credenciales.
 pip install -r requirements.txt
 
 # 1. Descargar los datos (~17 MB)
-python src/descargar_datos.py
+python src/download_data.py
 
 # 2. Perfilar los datos (integridad y pruebas de plausibilidad)
-python src/perfilado_datos.py
+python src/profile_data.py
 
 # 3. Generar las figuras
-python src/analisis.py
+python src/analysis.py
 ```
 
 ## Estructura
 
 ```
 ├── src/
-│   ├── descargar_datos.py   # descarga del dataset
-│   ├── perfilado_datos.py   # integridad + detección de datos sintéticos
-│   └── analisis.py          # ABC, forecast y política de inventario
+│   ├── download_data.py     # descarga del dataset
+│   ├── profile_data.py      # integridad + detección de datos sintéticos
+│   └── analysis.py          # ABC, forecast y política de inventario
 ├── figures/                 # gráficos generados (PNG)
 ├── data/                    # datos crudos (no versionados)
 └── requirements.txt
@@ -107,7 +107,7 @@ python src/analisis.py
 - **Punto de reorden** = demanda media diaria × lead time + stock de seguridad,
   con SS = z·σ·√LT (z = 1,65 para 95% de nivel de servicio, LT = 7 días).
 - Los parámetros de lead time y nivel de servicio son supuestos configurables
-  en `src/analisis.py`.
+  en `src/analysis.py`.
 
 ---
 
