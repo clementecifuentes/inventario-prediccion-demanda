@@ -9,6 +9,8 @@ Usage:
     python src/analysis.py
 """
 
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -213,6 +215,7 @@ def plot_replenishment_policy(df: pd.DataFrame) -> None:
 
 
 def main() -> None:
+    Path("figures").mkdir(exist_ok=True)
     df = load_data()
     print(f"Records: {len(df):,} | SKUs: {df['sku'].nunique()} | "
           f"stores: {df['store'].nunique()} | "
